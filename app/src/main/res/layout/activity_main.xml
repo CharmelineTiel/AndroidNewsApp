@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<android.support.v7.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/news_item_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerHorizontal="true"
-    android:orientation="vertical"
-    tools:context="charmelinetiel.androidnewsapp.MainActivity">
+    tools:listitem="@layout/news_item_view"
+    android:padding="8dp"
+    />
 
-
-</LinearLayout>

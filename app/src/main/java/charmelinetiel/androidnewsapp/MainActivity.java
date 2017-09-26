@@ -29,6 +29,8 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
 
         RecyclerView list = findViewById(R.id.news_item_view);
+
+        //build
         mContent = new ArrayList<>();
         addContent(0);
         mListAdapter = new NewsItemAdapter(mContent,this);
@@ -37,9 +39,33 @@ public class MainActivity extends Activity{
 
         list.setLayoutManager(USE_LIST ? mLinearLayoutManager : mGridLayoutManager);
         list.setAdapter(mListAdapter);
+        //scroll listener
+        list.addOnScrollListener(new RecyclerView.OnScrollListener(){
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+
+                int visivleItemCount = recyclerView.getChildCount();
+                int totalItemCount = USE_LIST ? mLinearLayoutManager.getItemCount() : mGridLayoutManager.getItemCount();
+                int firstVisibleItem = USE_LIST ? mLinearLayoutManager.findFirstVisibleItemPosition() : mGridLayoutManager.findFirstVisibleItemPosition();
+                if (firstVisibleItem + visivleItemCount >= totalItemCount)
+                {
+                    addContent(totalItemCount);
+                    mListAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        //TODO:implement scrolling + listener
     }
 
-    private void addContent(int i) {
+    private void addContent(int start) {
+
+        //TODO: dummy content, replace with api data
+        for(int i = start; i < start + 20; i++){
+            mContent.add(new NewsItem(this, i));
+        }
     }
+
+
 }

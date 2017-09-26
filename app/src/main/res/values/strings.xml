@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">My First Actual Android App</string>
+    <string name="app_name">Fake News</string>
+    <string name="newsItem_title">Item</string>
+    <string name="newsItem_description">Short introduction of the text from listitem to draw the attention of the user</string>
 </resources>

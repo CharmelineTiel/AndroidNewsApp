@@ -1,5 +1,6 @@
 package charmelinetiel.androidnewsapp.helpers;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Random;
 
-import charmelinetiel.androidnewsapp.MainActivity;
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.NewsItem;
 
@@ -24,15 +24,28 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
     private final List<NewsItem> mItems;
     private LayoutInflater mInflater;
-    public NewsItemAdapter(List<NewsItem> items, MainActivity mainActivity){
 
-        //?
+
+    public NewsItemAdapter(Context context, List<NewsItem> items){
+
+        mInflater = LayoutInflater.from(context);
         mItems = items;
     }
 
-    public int getCount() {
-        return 0;
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public TextView title;
+        TextView description;
+        ImageView image;
+        public ViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.list_item_title);
+            image = itemView.findViewById(R.id.list_item_image);
+            description = itemView.findViewById(R.id.list_item_description);
+        }
     }
+
 
     public NewsItem getItem(int position){
 
@@ -48,8 +61,6 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
-        //FILL
 
         NewsItem node = getItem(position);
 
@@ -70,45 +81,35 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         return mItems.size();
     }
 
+//
+//    public View getView(int position, View convertView, ViewGroup parent)
+//    {
+//        NewsItem node = mItems.get(position);
+//
+//        ViewHolder holder;
+//
+//        if(convertView == null){
+//
+//            convertView = mInflater.inflate(R.layout.news_item_view, null);
+//            holder = new ViewHolder(convertView);
+//            holder.image = convertView.findViewById(R.id.list_item_image);
+//            holder.title = convertView.findViewById(R.id.list_item_title);
+//            holder.description = convertView.findViewById(R.id.list_item_description);
+//        }else{
+//
+//            holder = (ViewHolder) convertView.getTag();
+//        }
+//
+//        holder.title.setText(node.Title);
+//        holder.description.setText(node.Description);
+//        convertView.setTag(holder);
+//        return convertView;
+//    }
 
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
-        NewsItem node = mItems.get(position);
 
-        ViewHolder holder;
-
-        if(convertView == null){
-
-            convertView = mInflater.inflate(R.layout.news_item_view, null);
-            holder = new ViewHolder(convertView);
-            holder.image = convertView.findViewById(R.id.list_item_image);
-            holder.title = convertView.findViewById(R.id.list_item_title);
-            holder.description = convertView.findViewById(R.id.list_item_description);
-        }else{
-
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        holder.title.setText(node.Title);
-        holder.description.setText(node.Description);
-        convertView.setTag(holder);
-        return convertView;
-    }
-
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView title;
-        TextView description;
-        ImageView image;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            title = itemView.findViewById(R.id.list_item_title);
-            image = itemView.findViewById(R.id.list_item_image);
-            description = itemView.findViewById(R.id.list_item_description);
-        }
-    }
+//    public int getCount() {
+//        return 0;
+//    }
 
 
 }
