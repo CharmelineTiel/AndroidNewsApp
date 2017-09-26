@@ -1,6 +1,5 @@
 package charmelinetiel.androidnewsapp.helpers;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,29 +22,34 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
 
     private final List<NewsItem> mItems;
-    private LayoutInflater mInflater;
+    private final NewsItemListener mListener;
 
+    //listener interface
+    public interface NewsItemListener {
 
-    public NewsItemAdapter(Context context, List<NewsItem> items){
+        void onItemClick(int position);
+    }
 
-        mInflater = LayoutInflater.from(context);
+    public NewsItemAdapter(List<NewsItem> items, NewsItemListener listener){
+
         mItems = items;
+        mListener = listener;
     }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
-        TextView description;
-        ImageView image;
-        public ViewHolder(View itemView) {
+        public TextView description;
+        public ImageView image;
+
+        ViewHolder(View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.list_item_title);
             image = itemView.findViewById(R.id.list_item_image);
+            title = itemView.findViewById(R.id.list_item_title);
             description = itemView.findViewById(R.id.list_item_description);
         }
     }
-
 
     public NewsItem getItem(int position){
 
@@ -55,20 +59,31 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = mInflater.inflate(R.layout.news_item_view, parent, false);
-        return new ViewHolder(view);
-    }
+        return new ViewHolder(
+
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.news_item_view, parent, false
+            ));
+        }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         NewsItem node = getItem(position);
 
+        //fill the views in the viewholder with content
         holder.title.setText(node.Title);
-        holder.title.setText(node.Description);
+        holder.description.setText(node.Description);
         Random rnd = new Random();
         int color = Color.argb(255,rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(265));
         holder.image.setBackgroundColor(color);
+
+        //
+        holder.itemView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                mListener.onItemClick(holder.getAdapterPosition());
+            }
+        });
     }
 
     @Override
@@ -80,36 +95,6 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
     public int getItemCount() {
         return mItems.size();
     }
-
-//
-//    public View getView(int position, View convertView, ViewGroup parent)
-//    {
-//        NewsItem node = mItems.get(position);
-//
-//        ViewHolder holder;
-//
-//        if(convertView == null){
-//
-//            convertView = mInflater.inflate(R.layout.news_item_view, null);
-//            holder = new ViewHolder(convertView);
-//            holder.image = convertView.findViewById(R.id.list_item_image);
-//            holder.title = convertView.findViewById(R.id.list_item_title);
-//            holder.description = convertView.findViewById(R.id.list_item_description);
-//        }else{
-//
-//            holder = (ViewHolder) convertView.getTag();
-//        }
-//
-//        holder.title.setText(node.Title);
-//        holder.description.setText(node.Description);
-//        convertView.setTag(holder);
-//        return convertView;
-//    }
-
-
-//    public int getCount() {
-//        return 0;
-//    }
 
 
 }

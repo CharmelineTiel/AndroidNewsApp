@@ -13,14 +13,15 @@ import charmelinetiel.androidnewsapp.helpers.NewsItemAdapter;
 import charmelinetiel.androidnewsapp.models.NewsItem;
 
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements NewsItemAdapter.NewsItemListener{
 
-    private static final boolean USE_LIST = true;
+  private static final boolean USE_LIST = true;
     private List<NewsItem> mContent;
     private NewsItemAdapter mListAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private GridLayoutManager mGridLayoutManager;
 
+    //public static final String CONTENT = "com.triple.samples.Exercise4bActivity.CONTENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +29,16 @@ public class MainActivity extends Activity{
 
         setContentView(R.layout.activity_main);
 
-        RecyclerView list = findViewById(R.id.news_item_view);
+        //NewsItem content = getIntent().getParcelableExtra(CONTENT);
 
-        //build
+//        ((TextView)findViewById(R.id.list_item_title)).setText(content.Title);
+//        ((TextView)findViewById(R.id.list_item_description)).setText(content.Description);
+//
+
+        RecyclerView list = findViewById(R.id.news_item_view);
         mContent = new ArrayList<>();
         addContent(0);
-        mListAdapter = new NewsItemAdapter(mContent,this);
+        mListAdapter = new NewsItemAdapter(mContent, this);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mGridLayoutManager = new GridLayoutManager(this, 2);
 
@@ -45,10 +50,10 @@ public class MainActivity extends Activity{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy){
 
-                int visivleItemCount = recyclerView.getChildCount();
+                int visibleItemCount = recyclerView.getChildCount();
                 int totalItemCount = USE_LIST ? mLinearLayoutManager.getItemCount() : mGridLayoutManager.getItemCount();
                 int firstVisibleItem = USE_LIST ? mLinearLayoutManager.findFirstVisibleItemPosition() : mGridLayoutManager.findFirstVisibleItemPosition();
-                if (firstVisibleItem + visivleItemCount >= totalItemCount)
+                if (firstVisibleItem + visibleItemCount >= totalItemCount)
                 {
                     addContent(totalItemCount);
                     mListAdapter.notifyDataSetChanged();
@@ -61,11 +66,18 @@ public class MainActivity extends Activity{
 
     private void addContent(int start) {
 
-        //TODO: dummy content, replace with api data
+//        //TODO: dummy content, replace with api data
         for(int i = start; i < start + 20; i++){
             mContent.add(new NewsItem(this, i));
         }
     }
 
 
+    @Override
+    public void onItemClick(int position) {
+//        NewsItem item = mListAdapter.getItem(position);
+//        Intent intent = new Intent(this, MainActivity.class);
+//        intent.putExtra(MainActivity.CONTENT, item);
+//        startActivity(intent);
+    }
 }
