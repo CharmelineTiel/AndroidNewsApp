@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="charmelinetiel.androidnewsapp.activities.SecondActivity">
+
+<ImageView
+    android:id="@+id/list_item_image"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@android:color/holo_blue_dark"
+    tools:layout_editor_absoluteY="0dp"
+    tools:layout_editor_absoluteX="8dp"
+    android:contentDescription="image" />
+
+    <TextView
+        android:id="@+id/list_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        tools:text="Title"
+        android:layout_below="@+id/list_item_image"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+    <TextView
+        android:layout_below="@+id/list_item_title"
+        android:id="@+id/date"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/list_item_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:text="A short description"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/date" />
+
+    <Button
+        android:text="Lees meer"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:padding="20dp"
+        android:width="250dp"
+        android:id="@+id/fullArticle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_item_description"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ListView
+        android:id="@+id/categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fullArticle" />
+
+    <ListView
+        android:id="@+id/related"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/categories"
+        />
+
+</RelativeLayout>
+
+

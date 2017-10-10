@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="charmelinetiel.androidnewsapp.activities.LoginActivity">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/usernameLbl"
+        android:text="Username"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_alignParentTop="true"
+        />
+    <EditText
+        android:id="@+id/username"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        android:layout_below="@+id/usernameLbl"
+
+        />
+
+    <TextView
+        android:id="@+id/passwordLbl"
+        android:text="Password"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/username"
+        android:layout_width="wrap_content" />
+    <EditText
+        android:id="@+id/password"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="text"
+        android:layout_below="@+id/passwordLbl"
+        />
+
+    <Button
+        android:id="@+id/loginBtn"
+        android:text="Inloggen"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        />
+</android.widget.RelativeLayout>

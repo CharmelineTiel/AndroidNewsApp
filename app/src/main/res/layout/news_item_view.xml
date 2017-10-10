@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/list_item_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         tools:background="#FF00FF" />
 
     <TextView
