@@ -15,7 +15,6 @@ public class User {
     @SerializedName("Password")
     @Expose
     private String password;
-    //private String userAuthToken;
 
     public User() {
     }
@@ -37,13 +36,5 @@ public class User {
     }
 
 
-//
-//    public String UserAuthToken() {
-//        return this.userAuthToken;
-//    }
-//
-//    public void setUserAuthToken(String authToken) {
-//        this.userAuthToken = authToken;
-//    }
 
 }

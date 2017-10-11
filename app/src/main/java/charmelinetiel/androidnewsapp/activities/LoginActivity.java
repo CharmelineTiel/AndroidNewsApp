@@ -1,15 +1,17 @@
 package charmelinetiel.androidnewsapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import charmelinetiel.androidnewsapp.R;
-import charmelinetiel.androidnewsapp.models.AuthToken;
+import charmelinetiel.androidnewsapp.models.AuthTokenResponse;
 import charmelinetiel.androidnewsapp.models.User;
+import charmelinetiel.androidnewsapp.models.token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,44 +35,61 @@ public class LoginActivity extends AppCompatActivity{
 
         mService = retrofit.create(APIService.class);
 
-        final Button button = findViewById(R.id.loginBtn);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button loginBtn = findViewById(R.id.loginBtn);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
                 EditText username = findViewById(R.id.username);
-                EditText password = findViewById(R.id.username);
+                EditText password = findViewById(R.id.password);
 
                 fetchUser(username.getText().toString(),password.getText().toString());
             }
         });
+
+
+        final Button registerBtn = findViewById(R.id.registerBtn);
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                intent.setType("text/plain");
+                startActivity(intent);
+            }
+        });
     }
-
-
 
     private void fetchUser(String username, String pass) {
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(pass);
-        Call<AuthToken> call = mService.getAuthToken(user);
-        call.enqueue(new Callback<AuthToken>() {
+        Call<AuthTokenResponse> call = mService.getAuthToken(user);
+        call.enqueue(new Callback<AuthTokenResponse>() {
             @Override
-            public void onResponse(Call<AuthToken> call, Response<AuthToken> response) {
+            public void onResponse(Call<AuthTokenResponse> call, Response<AuthTokenResponse> response) {
 
-                if (response.isSuccessful() && response.body() != null) {
+                int statusCode = response.code();
+                if (response.isSuccessful() && statusCode == 200) {
 
-                    AuthToken token = response.body();
-                    int statusCode = response.code();
-                    Log.d("LoginActivity", "Onresponse: " + statusCode);
-                    //String header = response.headers().get("x-authtoken");
+                    AuthTokenResponse authtoken = response.body();
 
+                        Toast.makeText(LoginActivity.this, "Ingelogd", Toast.LENGTH_SHORT).show();
+                        token.authToken = authtoken.getAuthToken();
+
+                        Intent intent = new Intent(LoginActivity.this, ArticlesActivity.class);
+                        startActivity(intent);
+
+                    }else{
+
+                    Toast.makeText(LoginActivity.this, "Uw wachtwoord of gebruikernaam is onjuist", Toast.LENGTH_SHORT).show();
                 }
-            }
+
+         }
 
             @Override
-            public void onFailure(Call<AuthToken> call, Throwable t) {
+            public void onFailure(Call<AuthTokenResponse> call, Throwable t) {
 
-                Log.d("Error", t.getMessage());
+                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
 
 

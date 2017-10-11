@@ -16,7 +16,7 @@ public class Article implements Parcelable {
 
         @SerializedName("Id")
         @Expose
-        private Integer id;
+        private String id;
         @SerializedName("Feed")
         @Expose
         private Integer feed;
@@ -54,6 +54,8 @@ public class Article implements Parcelable {
         url = in.readString();
         related = in.createStringArrayList();
         categories = in.createTypedArrayList(Category.CREATOR);
+        id = in.readString();
+        isLiked = Boolean.valueOf(in.readString());
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -68,11 +70,11 @@ public class Article implements Parcelable {
         }
     };
 
-    public Integer getId() {
+    public String getId() {
             return id;
         }
 
-        public void setId(Integer id) {
+        public void setId(String id) {
             this.id = id;
         }
 
@@ -162,5 +164,7 @@ public class Article implements Parcelable {
         dest.writeString(url);
         dest.writeStringList(related);
         dest.writeTypedList(categories);
+        dest.writeString(id);
+        dest.writeString(isLiked.toString());
     }
 }

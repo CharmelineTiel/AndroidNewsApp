@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="charmelinetiel.androidnewsapp.activities.SecondActivity">
+    tools:context="charmelinetiel.androidnewsapp.activities.DetailPageActivity">
 
 <ImageView
     android:id="@+id/list_item_image"
@@ -13,6 +13,12 @@
     tools:layout_editor_absoluteY="0dp"
     tools:layout_editor_absoluteX="8dp"
     android:contentDescription="image" />
+
+<ImageView
+    android:id="@+id/likedIcon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/list_item_image" />
 
     <TextView
         android:id="@+id/list_item_title"

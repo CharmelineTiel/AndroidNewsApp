@@ -9,13 +9,15 @@
     >
 
     <TextView
+        android:padding="10dp"
         android:id="@+id/usernameLbl"
-        android:text="Username"
+        android:text="Gebruikernaam"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_alignParentTop="true"
         />
     <EditText
+        android:padding="10dp"
         android:id="@+id/username"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -25,25 +27,55 @@
         />
 
     <TextView
+        android:padding="10dp"
         android:id="@+id/passwordLbl"
-        android:text="Password"
+        android:text="Wachtwoord"
         android:layout_height="wrap_content"
         android:layout_below="@+id/username"
         android:layout_width="wrap_content" />
+
     <EditText
+        android:padding="10dp"
         android:id="@+id/password"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:inputType="text"
         android:layout_below="@+id/passwordLbl"
+        android:inputType="textPassword"
         />
 
     <Button
         android:id="@+id/loginBtn"
         android:text="Inloggen"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:padding="20dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_width="200dp"
         android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
         />
+
+    <TextView
+        android:padding="10dp"
+        android:id="@+id/registerLbl"
+        android:layout_centerHorizontal="true"
+        android:text="Nog geen account?"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        />
+    <Button
+        android:id="@+id/registerBtn"
+        android:text="Registreren"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:padding="10dp"
+        android:layout_width="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/registerLbl"
+        />
+
+
 </android.widget.RelativeLayout>

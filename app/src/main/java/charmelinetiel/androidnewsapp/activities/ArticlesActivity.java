@@ -18,15 +18,10 @@ public class ArticlesActivity extends AppCompatActivity
         implements
         NavigationView.OnNavigationItemSelectedListener {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
-
-
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,6 +52,7 @@ public class ArticlesActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
+
         return true;
     }
 
@@ -94,10 +90,13 @@ public class ArticlesActivity extends AppCompatActivity
             Intent intent = new Intent(ArticlesActivity.this, LoginActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_register) {
+        }
+        else if (id == R.id.nav_liked) {
+
+            Intent intent = new Intent(ArticlesActivity.this, LikedArticlesActivity.class);
+            startActivity(intent);
 
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
