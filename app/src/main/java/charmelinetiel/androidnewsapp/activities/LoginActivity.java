@@ -22,11 +22,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity{
 
     private APIService mService;
-
+    private User loggedInUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login1);
+        setContentView(R.layout.activity_login);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity{
         User user = new User();
         user.setUsername(username);
         user.setPassword(pass);
+        setUser(user);
         Call<AuthTokenResponse> call = mService.getAuthToken(user);
         call.enqueue(new Callback<AuthTokenResponse>() {
             @Override
@@ -76,7 +77,9 @@ public class LoginActivity extends AppCompatActivity{
                         Toast.makeText(LoginActivity.this, "Ingelogd", Toast.LENGTH_SHORT).show();
                         token.authToken = authtoken.getAuthToken();
 
-                        Intent intent = new Intent(LoginActivity.this, ArticlesActivity.class);
+                    //((TextView) findViewById(R.id.loggedInUsername)).setText(getUser().getUsername());
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
 
                     }else{
@@ -89,7 +92,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onFailure(Call<AuthTokenResponse> call, Throwable t) {
 
-                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Er is iets fout gegaan, probeer het opnieuw", Toast.LENGTH_LONG).show();
             }
 
 
@@ -97,4 +100,11 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
+    public User getUser() {
+        return this.loggedInUser;
+    }
+
+    public void setUser(User user) {
+        this.loggedInUser = user;
+    }
 }

@@ -30,6 +30,10 @@ public interface APIService {
         Call<RootObject> getMoreArticles(@Header("x-authtoken") String api_token, @Path("nextId") int nextId, @Query("count") int count);
 
 
+        @GET("Articles/?feeds={feedId}")
+        Call<RootObject> getArticlesByCategory(@Header("x-authtoken") String api_token, @Query("feedId") int count);
+
+
         @GET("Articles/Liked")
         Call<RootObject> getLikedArticles(@Header("x-authtoken") String api_token);
 

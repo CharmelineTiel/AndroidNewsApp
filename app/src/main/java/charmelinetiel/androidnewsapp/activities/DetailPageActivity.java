@@ -1,8 +1,11 @@
 package charmelinetiel.androidnewsapp.activities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
     public static final String CONTENT = "8b:CONTENT";
     private APIService mService;
     private ImageView faveIcon;
+    private Button readMore;
     private Article content;
 
     public DetailPageActivity() {
@@ -41,7 +45,7 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
                 .build();
 
         mService = retrofit.create(APIService.class);
-
+//
 
          this.content = getIntent().getParcelableExtra(CONTENT);
 
@@ -50,8 +54,10 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
         ((TextView) findViewById(R.id.list_item_description)).setText(content.getSummary());
         ((TextView) findViewById(R.id.date)).setText(content.getPublishDate());
         ((TextView) findViewById(R.id.list_item_title)).setText(content.getTitle());
-        this.faveIcon = (ImageView) findViewById(R.id.likedIcon);
+        this.faveIcon =  findViewById(R.id.likedIcon);
         faveIcon.setOnClickListener(this);
+        this.readMore = findViewById(R.id.fullArticle);
+        readMore.setOnClickListener(this);
         Glide.with(this).load(content.getImage()).centerCrop().into(image);
 
 
@@ -79,7 +85,14 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
         super.onDestroy();
         finish();
     }
+    @Override
+    protected void onRestart() {
 
+        super.onRestart();
+        Intent i = new Intent(DetailPageActivity.this, DetailPageActivity.class);
+        startActivity(i);
+        finish();
+    }
     @Override
     public void onClick(View v) {
 
@@ -133,6 +146,13 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
                 }
 
                 break;
+            }
+
+            case R.id.fullArticle: {
+
+                Uri uri = Uri.parse(content.getUrl());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         }
     }

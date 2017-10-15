@@ -15,6 +15,7 @@ import java.util.List;
 
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.Article;
+import charmelinetiel.androidnewsapp.models.token;
 
 /**
  * Created by Tiel on 26-9-2017.
@@ -26,6 +27,7 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
     private List<Article> mItems;
     private Context mContext;
     private NewsItemListener mListener;
+    public void setmItems(List<Article> newArticles) {this.mItems.addAll(newArticles);}
 
     //listener interface
     public interface NewsItemListener {
@@ -37,7 +39,7 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
         mItems = items;
         mListener = listener;
-       mContext = context;
+        mContext = context;
 
     }
 
@@ -46,13 +48,14 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         public TextView title;
         public TextView description;
         public ImageView image;
-
+        public ImageView likedIcon;
 
         ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.list_item_image);
             title = itemView.findViewById(R.id.list_item_title);
             description = itemView.findViewById(R.id.list_item_description);
+            likedIcon = itemView.findViewById(R.id.list_item_likedIcon);
 
         }
 
@@ -65,7 +68,7 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
     public Article getItem(int position){
 
-        return mItems.get(position);
+        return (Article) mItems.get(position);
     }
 
     @Override
@@ -82,6 +85,19 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         //fill the views in the viewholder with content
         holder.title.setText(node.getTitle());
         Glide.with(mContext).load(node.getImage()).centerCrop().crossFade().into(holder.image);
+
+        if (token.authToken != null)
+        {
+            holder.likedIcon.setVisibility(View.VISIBLE);
+
+            if (node.getIsLiked()){
+
+                holder.likedIcon.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
+            }else{
+                holder.likedIcon.setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
+            }
+
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
