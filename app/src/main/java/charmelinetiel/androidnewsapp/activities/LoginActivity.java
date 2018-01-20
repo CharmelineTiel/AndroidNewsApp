@@ -13,11 +13,11 @@ import charmelinetiel.androidnewsapp.models.AuthTokenResponse;
 import charmelinetiel.androidnewsapp.models.User;
 import charmelinetiel.androidnewsapp.models.token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
+import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -28,10 +28,8 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitClient.getClient();
+        mService = retrofit.create(APIService.class);
 
         mService = retrofit.create(APIService.class);
 
@@ -52,7 +50,6 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View v) {
 
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                intent.setType("text/plain");
                 startActivity(intent);
             }
         });
@@ -77,9 +74,7 @@ public class LoginActivity extends AppCompatActivity{
                         Toast.makeText(LoginActivity.this, "Ingelogd", Toast.LENGTH_SHORT).show();
                         token.authToken = authtoken.getAuthToken();
 
-                    //((TextView) findViewById(R.id.loggedInUsername)).setText(getUser().getUsername());
-
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, AllArticlesActivity.class);
                         startActivity(intent);
 
                     }else{

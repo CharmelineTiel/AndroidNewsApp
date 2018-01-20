@@ -13,11 +13,11 @@ import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.ServerResponse;
 import charmelinetiel.androidnewsapp.models.User;
 import charmelinetiel.androidnewsapp.webservice.APIService;
+import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -28,10 +28,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitClient.getClient();
+        mService = retrofit.create(APIService.class);
 
         mService = retrofit.create(APIService.class);
 

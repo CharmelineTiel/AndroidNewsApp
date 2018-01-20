@@ -106,6 +106,16 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         });
     }
 
+
+    public void setData(List<Article> data){
+        this.mItems.addAll(data);
+    }
+    public void updateData(List<Article> data){
+
+        data.clear();
+        this.mItems.addAll(data);
+    }
+
     @Override
     public int getItemCount() {
         return mItems.size();

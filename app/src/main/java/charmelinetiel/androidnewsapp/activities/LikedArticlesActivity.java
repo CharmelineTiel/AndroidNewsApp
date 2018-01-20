@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.adapters.NewsItemAdapter;
@@ -21,11 +24,11 @@ import charmelinetiel.androidnewsapp.models.Article;
 import charmelinetiel.androidnewsapp.models.RootObject;
 import charmelinetiel.androidnewsapp.models.token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
+import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LikedArticlesActivity extends AppCompatActivity implements
         Callback<RootObject>,
@@ -35,6 +38,8 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
     private RecyclerView mRecyclerView;
     private APIService mService;
+    private NewsItemAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +50,6 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         //menu stuff
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -61,20 +64,34 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         mRecyclerView = findViewById(R.id.news_item_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = RetrofitClient.getClient();
         mService = retrofit.create(APIService.class);
 
-        fetchLikedContent();
+        adapter = new NewsItemAdapter(this, new ArrayList<Article>(), this);
+        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.animate().alpha(1);
+
+        if (token.authToken == null){
+
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+
+        }else{
+
+            fetchLikedContent();
+        }
     }
 
     private void fetchLikedContent() {
 
+        if (token.authToken != null) {
+            mService.getLikedArticles(token.authToken).enqueue(this);
+        }
+        else{
 
-        mService.getLikedArticles(token.authToken).enqueue(this);
+            Toast.makeText(this, "Je bent nog niet ingelogd", Toast.LENGTH_LONG).show();
+
+        }
 
     }
 
@@ -83,24 +100,17 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
         Intent intent = new Intent(this, DetailPageActivity.class);
         intent.putExtra(DetailPageActivity.CONTENT, content);
-        intent.setType("text/plain");
         startActivity(intent);
     }
-    @Override
-    protected void onRestart() {
 
-        super.onRestart();
-        Intent i = new Intent(LikedArticlesActivity.this, LikedArticlesActivity.class);
-        startActivity(i);
-        finish();
-    }
     @Override
     public void onResponse(Call<RootObject> call, Response<RootObject> response) {
 
         if (response.isSuccessful() && response.body() != null) {
-            NewsItemAdapter adapter = new NewsItemAdapter(this, response.body().getResults(), this);
-            mRecyclerView.setAdapter(adapter);
-            mRecyclerView.animate().alpha(1);
+
+            adapter.setmItems(response.body().getResults());
+            adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -116,9 +126,8 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         if (id == R.id.refresh) {
-            Intent i = new Intent(LikedArticlesActivity.this, LikedArticlesActivity.class);
-            startActivity(i);
-            finish();
+
+            fetchLikedContent();
         }
 
         return super.onOptionsItemSelected(item);
@@ -147,7 +156,7 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         if (id == R.id.nav_home) {
 
 
-            Intent intent = new Intent(LikedArticlesActivity.this, MainActivity.class);
+            Intent intent = new Intent(LikedArticlesActivity.this, AllArticlesActivity.class);
             startActivity(intent);
 
 

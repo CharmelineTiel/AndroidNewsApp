@@ -23,16 +23,14 @@ import charmelinetiel.androidnewsapp.models.Article;
 import charmelinetiel.androidnewsapp.models.RootObject;
 import charmelinetiel.androidnewsapp.models.token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
+import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static android.content.ContentValues.TAG;
 
 
-public class MainActivity extends AppCompatActivity implements Callback<RootObject>,
+public class AllArticlesActivity extends AppCompatActivity implements Callback<RootObject>,
         NewsItemAdapter.NewsItemListener,
         NavigationView.OnNavigationItemSelectedListener
 
@@ -46,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
     private boolean loading = true;
     private int pastVisiblesItems;
     private int nextId;
+    private Retrofit retrofit;
     private final int AMOUNT = 20;
     private NewsItemAdapter adapter;
     private int visibleThreshold = 5;
@@ -77,13 +76,9 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
         layout = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layout);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        mService = retrofit.create(APIService.class);
-
+            retrofit = RetrofitClient.getClient();
+            mService = retrofit.create(APIService.class);
             fetchContent();
 
         //load more items with listener
@@ -125,9 +120,10 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
             }
         });
 
-
         adapter = new NewsItemAdapter(this, new ArrayList<Article>(), this);
         mRecyclerView.setAdapter(adapter);
+        mRecyclerView.animate().alpha(1);
+
     }
 
     @Override
@@ -136,12 +132,7 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
 
         if (id == R.id.refresh) {
 
-            Intent i = new Intent(MainActivity.this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            startActivity(i);
-            finish();
-
+            fetchContent();
         }
 
         return super.onOptionsItemSelected(item);
@@ -170,19 +161,19 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
         if (id == R.id.nav_home) {
 
 
-            Intent intent = new Intent(MainActivity.this, MainActivity.class);
+            Intent intent = new Intent(AllArticlesActivity.this, AllArticlesActivity.class);
             startActivity(intent);
 
 
         } else if (id == R.id.nav_login) {
 
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent = new Intent(AllArticlesActivity.this, LoginActivity.class);
             startActivity(intent);
 
         }
         else if (id == R.id.nav_liked) {
 
-            Intent intent = new Intent(MainActivity.this, LikedArticlesActivity.class);
+            Intent intent = new Intent(AllArticlesActivity.this, LikedArticlesActivity.class);
             startActivity(intent);
 
         }
@@ -191,30 +182,17 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
         return true;
     }
 
-    @Override
-    protected void onStop() {
-        Log.w(TAG, "App stopped");
-        super.onStop();
-    }
-    @Override
-    protected void onRestart() {
-
-        super.onRestart();
-//        Intent i = new Intent(MainActivity.this, MainActivity.class);
-//        startActivity(i);
-//        finish();
-    }
 
     private void fetchContent() {
 
-        Call<RootObject> articles = mService.getAllArticles(token.authToken);
-        articles.enqueue(this);
+            Call<RootObject> articles = mService.getAllArticles(token.authToken);
+            articles.enqueue(this);
 
     }
     private void LoadMoreContent() {
 
-        Call<RootObject> articles = mService.getMoreArticles(token.authToken, getNextId(), AMOUNT);
-        articles.enqueue(this);
+            Call<RootObject> articles = mService.getMoreArticles(token.authToken, getNextId(), AMOUNT);
+            articles.enqueue(this);
 
     }
 
@@ -225,9 +203,9 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
 
             if (nextId != response.body().getNextId()) {
 
-                setNextId(response.body().getNextId());
                 adapter.setmItems(response.body().getResults());
                 adapter.notifyDataSetChanged();
+                setNextId(response.body().getNextId());
             }
         }
     }
@@ -241,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements Callback<RootObje
 
         Intent intent = new Intent(this, DetailPageActivity.class);
         intent.putExtra(DetailPageActivity.CONTENT, content);
-        intent.setType("text/plain");
         startActivity(intent);
     }
 

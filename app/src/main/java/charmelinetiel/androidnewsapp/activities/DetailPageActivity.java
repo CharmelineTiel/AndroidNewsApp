@@ -16,11 +16,11 @@ import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.Article;
 import charmelinetiel.androidnewsapp.models.token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
+import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class DetailPageActivity extends Activity implements View.OnClickListener{
@@ -39,13 +39,9 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
         setContentView(R.layout.activity_second);
 
         //start retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://inhollandbackend.azurewebsites.net/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        Retrofit retrofit = RetrofitClient.getClient();
         mService = retrofit.create(APIService.class);
-//
+
 
          this.content = getIntent().getParcelableExtra(CONTENT);
 
@@ -75,7 +71,6 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
 
         }
 
-
     }
 
 
@@ -102,16 +97,17 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
             {
 
                 //like
-                if(!content.getIsLiked() == true)
+                if(content.getIsLiked() == false)
                 {
                     mService.likeArticle(token.authToken,content.getId()).enqueue(new Callback<Void>(){
 
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
 
-                            int statusCode = response.code();
                             Toast.makeText(DetailPageActivity.this, "Liked!", Toast.LENGTH_LONG).show();
                             faveIcon.setBackgroundResource(R.drawable.ic_favorite_black_24dp);
+                            content.setIsLiked(true);
+
                         }
 
                         @Override
@@ -121,17 +117,18 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
                         }
                     });
 
-                }else{
-                    //unlike
+                }else if (content.getIsLiked() == true){
 
+
+                    //unlike
                     mService.UnlikeArticle(token.authToken,content.getId()).enqueue(new Callback<Void>(){
 
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
 
-                            int statusCode = response.code();
                             Toast.makeText(DetailPageActivity.this, "Unliked", Toast.LENGTH_LONG).show();
                             faveIcon.setBackgroundResource(R.drawable.ic_favorite_border_black_24dp);
+                            content.setIsLiked(false);
 
 
                         }
@@ -155,5 +152,12 @@ public class DetailPageActivity extends Activity implements View.OnClickListener
                 startActivity(intent);
             }
         }
+    }
+
+    public void onBackPressed()
+    {
+        Intent setIntent = new Intent(this,AllArticlesActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 }
