@@ -153,9 +153,13 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-            finish();
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
 
+            finish();
+        }
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -260,6 +264,7 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
         startActivity(intent);
 
     }
+
 
     private void showProgressbar(){
 

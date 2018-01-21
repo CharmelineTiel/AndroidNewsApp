@@ -175,14 +175,9 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_login) {
 
-            if (Token.authToken == null) {
+
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
-                item.setTitle("Uitloggen");
-            }else{
-
-                Token.getInstance().setAuthToken(null);
-            }
 
         }
         else if (id == R.id.nav_liked) {

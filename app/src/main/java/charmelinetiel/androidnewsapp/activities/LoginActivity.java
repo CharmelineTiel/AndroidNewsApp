@@ -125,13 +125,7 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
 
-            if (Token.authToken != null) {
-                super.onBackPressed();
-            }else{
-
-                Intent intent = new Intent(this, AllArticlesActivity.class);
-                startActivity(intent);
-            }
+       super.onBackPressed();
 
     }
 
