@@ -23,7 +23,6 @@
     <include layout="@layout/content_menu" />
 
     <ListView
-        android:background="@color/colorAccent"
         android:id="@+id/myList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

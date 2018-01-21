@@ -22,13 +22,15 @@ import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.adapters.NewsItemAdapter;
 import charmelinetiel.androidnewsapp.models.Article;
 import charmelinetiel.androidnewsapp.models.RootObject;
-import charmelinetiel.androidnewsapp.models.token;
+import charmelinetiel.androidnewsapp.models.Token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
 import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static charmelinetiel.androidnewsapp.activities.AllArticlesActivity.articles;
 
 public class LikedArticlesActivity extends AppCompatActivity implements
         Callback<RootObject>,
@@ -45,6 +47,7 @@ public class LikedArticlesActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liked_articles);
+
 
 
         //menu stuff
@@ -67,11 +70,13 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         Retrofit retrofit = RetrofitClient.getClient();
         mService = retrofit.create(APIService.class);
 
-        adapter = new NewsItemAdapter(this, new ArrayList<Article>(), this);
+
+        articles = new ArrayList<>();
+        adapter = new NewsItemAdapter(this, articles, this);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.animate().alpha(1);
 
-        if (token.authToken == null){
+        if (Token.authToken == null){
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -84,8 +89,8 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
     private void fetchLikedContent() {
 
-        if (token.authToken != null) {
-            mService.getLikedArticles(token.authToken).enqueue(this);
+        if (Token.authToken != null) {
+            mService.getLikedArticles(String.valueOf(Token.authToken)).enqueue(this);
         }
         else{
 
@@ -108,8 +113,15 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
         if (response.isSuccessful() && response.body() != null) {
 
-            adapter.setmItems(response.body().getResults());
-            adapter.notifyDataSetChanged();
+            articles.addAll(response.body().getResults());
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    adapter.notifyDataSetChanged();
+                }
+            });
 
         }
     }
@@ -144,7 +156,8 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+                super.onBackPressed();
         }
     }
     @SuppressWarnings("StatementWithEmptyBody")
@@ -162,8 +175,14 @@ public class LikedArticlesActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_login) {
 
-            Intent intent = new Intent(LikedArticlesActivity.this, LoginActivity.class);
-            startActivity(intent);
+            if (Token.authToken == null) {
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                item.setTitle("Uitloggen");
+            }else{
+
+                Token.getInstance().setAuthToken(null);
+            }
 
         }
         else if (id == R.id.nav_liked) {
@@ -175,5 +194,14 @@ public class LikedArticlesActivity extends AppCompatActivity implements
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onRestart() {
+
+        super.onRestart();
+
+        articles.clear();
+        fetchLikedContent();
     }
 }

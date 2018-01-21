@@ -3,13 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="20dp"
     tools:context="charmelinetiel.androidnewsapp.activities.LoginActivity">
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    >
 
     <TextView
-        android:padding="10dp"
         android:id="@+id/usernameLbl"
         android:text="Gebruikernaam"
         android:layout_height="wrap_content"
@@ -35,7 +32,6 @@
         android:layout_width="wrap_content" />
 
     <EditText
-        android:padding="10dp"
         android:id="@+id/password"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -47,9 +43,10 @@
         android:id="@+id/loginBtn"
         android:text="Inloggen"
         android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:padding="20dp"
-        android:layout_width="300dp"
+        android:background="@color/colorAccent"
+        android:padding="10dp"
+        android:width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
@@ -57,10 +54,11 @@
 
     <TextView
         android:padding="10dp"
+        android:layout_marginTop="100dp"
         android:id="@+id/registerLbl"
         android:layout_centerHorizontal="true"
         android:text="Nog geen account?"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerInParent="true"

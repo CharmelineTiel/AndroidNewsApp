@@ -15,7 +15,7 @@ import java.util.List;
 
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.Article;
-import charmelinetiel.androidnewsapp.models.token;
+import charmelinetiel.androidnewsapp.models.Token;
 
 /**
  * Created by Tiel on 26-9-2017.
@@ -27,7 +27,11 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
     private List<Article> mItems;
     private Context mContext;
     private NewsItemListener mListener;
-    public void setmItems(List<Article> newArticles) {this.mItems.addAll(newArticles);}
+
+    public void setmItems(List<Article> newArticles) {
+        this.mItems.addAll(newArticles);
+
+    }
 
     //listener interface
     public interface NewsItemListener {
@@ -86,7 +90,7 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
         holder.title.setText(node.getTitle());
         Glide.with(mContext).load(node.getImage()).centerCrop().crossFade().into(holder.image);
 
-        if (token.authToken != null)
+        if (Token.authToken != null)
         {
             holder.likedIcon.setVisibility(View.VISIBLE);
 
@@ -108,12 +112,12 @@ public class NewsItemAdapter extends RecyclerView.Adapter<NewsItemAdapter.ViewHo
 
 
     public void setData(List<Article> data){
+        clearItems();
         this.mItems.addAll(data);
     }
-    public void updateData(List<Article> data){
 
-        data.clear();
-        this.mItems.addAll(data);
+    public void clearItems(){
+       mItems.clear();
     }
 
     @Override

@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="charmelinetiel.androidnewsapp.activities.DetailPageActivity">
 
+
 <LinearLayout android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:visibility="gone"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center">
+    </ProgressBar>
+
     <charmelinetiel.androidnewsapp.views.SquareFrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -75,17 +87,36 @@
         android:text="Lees verder"
         android:textColor="@android:color/white" />
 
+
+    <TextView
+        android:id="@+id/categoriesLbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Categorieen"
+        android:textSize="16sp"
+        android:layout_below="@+id/date" />
+
     <ListView
         android:id="@+id/categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/fullArticle" />
 
+
+    <TextView
+        android:id="@+id/relatedLbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gerelateerde artikelen"
+        android:textSize="16sp"
+        android:layout_below="@+id/date" />
+
     <ListView
         android:id="@+id/related"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/categories"
+        android:layout_marginBottom="20dp"
         />
 </LinearLayout>
 </ScrollView>

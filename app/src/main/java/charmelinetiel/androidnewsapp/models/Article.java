@@ -49,7 +49,7 @@ public class Article implements Parcelable {
     protected Article(Parcel in) {
         title = in.readString();
         summary = in.readString();
-        publishDate = in.readString();
+        publishDate = in.readString(); //
         image = in.readString();
         url = in.readString();
         related = in.createStringArrayList();
@@ -167,4 +167,5 @@ public class Article implements Parcelable {
         dest.writeString(id);
         dest.writeString(isLiked.toString());
     }
+
 }

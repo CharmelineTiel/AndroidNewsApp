@@ -14,14 +14,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.adapters.NewsItemAdapter;
 import charmelinetiel.androidnewsapp.models.Article;
 import charmelinetiel.androidnewsapp.models.RootObject;
-import charmelinetiel.androidnewsapp.models.token;
+import charmelinetiel.androidnewsapp.models.Token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
 import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
@@ -33,7 +36,6 @@ import retrofit2.Retrofit;
 public class AllArticlesActivity extends AppCompatActivity implements Callback<RootObject>,
         NewsItemAdapter.NewsItemListener,
         NavigationView.OnNavigationItemSelectedListener
-
 {
 
     private RecyclerView mRecyclerView;
@@ -49,6 +51,8 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
     private NewsItemAdapter adapter;
     private int visibleThreshold = 5;
     private int firstVisibleItem;
+    public static List<Article> articles;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        setTitle("Home");
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -73,12 +77,20 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
         //fill recyclerview with items
         mRecyclerView = findViewById(R.id.news_item_view);
+        progressBar = findViewById(R.id.progressbar);
         layout = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layout);
 
 
             retrofit = RetrofitClient.getClient();
             mService = retrofit.create(APIService.class);
+
+
+            articles = new ArrayList<>();
+            adapter = new NewsItemAdapter(this, articles, this);
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.invalidate();
+            mRecyclerView.animate().alpha(1);
             fetchContent();
 
         //load more items with listener
@@ -119,11 +131,6 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
             }
         });
-
-        adapter = new NewsItemAdapter(this, new ArrayList<Article>(), this);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.animate().alpha(1);
-
     }
 
     @Override
@@ -132,7 +139,8 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
         if (id == R.id.refresh) {
 
-            fetchContent();
+            Intent intent = new Intent(this, this.getClass());
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,12 +153,9 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        super.onBackPressed();
+            finish();
+
     }
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -160,15 +165,14 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
         if (id == R.id.nav_home) {
 
-
             Intent intent = new Intent(AllArticlesActivity.this, AllArticlesActivity.class);
             startActivity(intent);
 
 
         } else if (id == R.id.nav_login) {
 
-            Intent intent = new Intent(AllArticlesActivity.this, LoginActivity.class);
-            startActivity(intent);
+                Intent intent = new Intent(AllArticlesActivity.this, LoginActivity.class);
+                startActivity(intent);
 
         }
         else if (id == R.id.nav_liked) {
@@ -185,13 +189,13 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
 
     private void fetchContent() {
 
-            Call<RootObject> articles = mService.getAllArticles(token.authToken);
+            Call<RootObject> articles = mService.getAllArticles(Token.authToken);
             articles.enqueue(this);
 
     }
     private void LoadMoreContent() {
 
-            Call<RootObject> articles = mService.getMoreArticles(token.authToken, getNextId(), AMOUNT);
+            Call<RootObject> articles = mService.getMoreArticles(Token.authToken, getNextId(), AMOUNT);
             articles.enqueue(this);
 
     }
@@ -199,15 +203,31 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
     @Override
     public void onResponse(Call<RootObject> call, Response<RootObject> response) {
 
+        showProgressbar();
+
         if (response.isSuccessful() && response.body() != null) {
 
             if (nextId != response.body().getNextId()) {
 
-                adapter.setmItems(response.body().getResults());
-                adapter.notifyDataSetChanged();
+                articles.addAll(response.body().getResults());
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        adapter.notifyDataSetChanged();
+                    }
+                });
                 setNextId(response.body().getNextId());
             }
+        }else{
+
+
+            Toast.makeText(this, "Er is iets fout gegaan bij het laden van alle artikelen", Toast.LENGTH_SHORT).show();
+
         }
+
+        hideProgressbar();
     }
 
     @Override
@@ -230,4 +250,26 @@ public class AllArticlesActivity extends AppCompatActivity implements Callback<R
         this.nextId = nextId;
     }
 
+
+    @Override
+    public void onRestart() {
+
+        super.onRestart();
+
+        Intent intent = new Intent(this, this.getClass());
+        startActivity(intent);
+
+    }
+
+    private void showProgressbar(){
+
+        mRecyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+    private void hideProgressbar(){
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+
+    }
 }

@@ -31,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
         Retrofit retrofit = RetrofitClient.getClient();
         mService = retrofit.create(APIService.class);
 
-        mService = retrofit.create(APIService.class);
+        setTitle("Registreren");
 
         final Button loginBtn = findViewById(R.id.RegisterBtn2);
         loginBtn.setOnClickListener(new View.OnClickListener() {

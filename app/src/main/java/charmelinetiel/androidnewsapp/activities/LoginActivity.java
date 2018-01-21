@@ -6,12 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import charmelinetiel.androidnewsapp.R;
 import charmelinetiel.androidnewsapp.models.AuthTokenResponse;
 import charmelinetiel.androidnewsapp.models.User;
-import charmelinetiel.androidnewsapp.models.token;
+import charmelinetiel.androidnewsapp.models.Token;
 import charmelinetiel.androidnewsapp.webservice.APIService;
 import charmelinetiel.androidnewsapp.webservice.RetrofitClient;
 import retrofit2.Call;
@@ -23,6 +24,10 @@ public class LoginActivity extends AppCompatActivity{
 
     private APIService mService;
     private User loggedInUser;
+    private EditText username, password;
+    private Button registerBtn, loginBtn;
+    private TextView registerText, usernameText, passwordText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,22 +35,44 @@ public class LoginActivity extends AppCompatActivity{
 
         Retrofit retrofit = RetrofitClient.getClient();
         mService = retrofit.create(APIService.class);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        loginBtn = findViewById(R.id.loginBtn);
+        registerBtn = findViewById(R.id.registerBtn);
+        registerText = findViewById(R.id.registerLbl);
+        usernameText = findViewById(R.id.usernameLbl);
+        passwordText = findViewById(R.id.passwordLbl);
 
-        mService = retrofit.create(APIService.class);
 
-        final Button loginBtn = findViewById(R.id.loginBtn);
+
+        if (Token.authToken == null)
+        {
+            hideLogout();
+
+        }else{
+
+            showLogout();
+        }
+
         loginBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                EditText username = findViewById(R.id.username);
-                EditText password = findViewById(R.id.password);
 
-                fetchUser(username.getText().toString(),password.getText().toString());
+                if (Token.authToken == null){
+
+                    fetchUser(username.getText().toString(),password.getText().toString());
+                }else{
+
+                    Token.getInstance().setAuthToken(null);
+                    Toast.makeText(LoginActivity.this, "U bent nu uitgelogd", Toast.LENGTH_LONG).show();
+                    hideLogout();
+
+                }
+
             }
         });
 
 
-        final Button registerBtn = findViewById(R.id.registerBtn);
         registerBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -72,10 +99,11 @@ public class LoginActivity extends AppCompatActivity{
                     AuthTokenResponse authtoken = response.body();
 
                         Toast.makeText(LoginActivity.this, "Ingelogd", Toast.LENGTH_SHORT).show();
-                        token.authToken = authtoken.getAuthToken();
+                        Token.authToken = authtoken.getAuthToken();
 
                         Intent intent = new Intent(LoginActivity.this, AllArticlesActivity.class);
                         startActivity(intent);
+                        finish();
 
                     }else{
 
@@ -94,6 +122,18 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public void onBackPressed() {
+
+            if (Token.authToken != null) {
+                super.onBackPressed();
+            }else{
+
+                Intent intent = new Intent(this, AllArticlesActivity.class);
+                startActivity(intent);
+            }
+
+    }
 
     public User getUser() {
         return this.loggedInUser;
@@ -101,5 +141,28 @@ public class LoginActivity extends AppCompatActivity{
 
     public void setUser(User user) {
         this.loggedInUser = user;
+    }
+
+    public void hideLogout(){
+
+        username.setVisibility(View.VISIBLE);
+        password.setVisibility(View.VISIBLE);
+        registerBtn.setVisibility(View.VISIBLE);
+        registerText.setVisibility(View.VISIBLE);
+        usernameText.setVisibility(View.VISIBLE);
+        passwordText.setVisibility(View.VISIBLE);
+        loginBtn.setText("Inloggen");
+
+    }
+
+    public void showLogout(){
+
+        username.setVisibility(View.GONE);
+        password.setVisibility(View.GONE);
+        registerBtn.setVisibility(View.GONE);
+        registerText.setVisibility(View.GONE);
+        usernameText.setVisibility(View.GONE);
+        passwordText.setVisibility(View.GONE);
+        loginBtn.setText("Uitloggen");
     }
 }
